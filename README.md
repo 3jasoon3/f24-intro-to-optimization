@@ -1,1 +1,1 @@
-# [F24] Introduction to Optimization | Innopolis University
+# [F24] Introduction to Optimization
