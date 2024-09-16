@@ -4,7 +4,6 @@ class Simplex:
     def __init__(self, C: List[float], A: List[float], b:List[float], accuracy:float) -> None:
         self.C_coef = np.array(C)
         self.A_coef = np.array(A)
-        print(self.A_coef.shape)
         self.b_coef = np.array(b)
         self.accuracy = accuracy
         self.table = None
