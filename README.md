@@ -1,1 +1,1 @@
-# intro-to-opt-b23
+# [F24] Introduction to Optimization | Innopolis University
