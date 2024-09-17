@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 import numpy as np
 
 
@@ -14,7 +14,7 @@ class Simplex:
         self.table = None
         self.optimised = False
 
-    def fill_initial_table(self):
+    def fill_initial_table(self) -> None:
         self.table = np.hstack(
             (
                 self.A_coef,
@@ -25,13 +25,13 @@ class Simplex:
         func = np.hstack((-self.C_coef, np.zeros(self.A_coef.shape[0] + 1)))
         self.table = np.vstack((self.table, func))
 
-    def print_current_table(self):
+    def print_current_table(self) -> None:
         print(self.table)
 
-    def is_optimised(self):
-        return self.is_optimised
+    def is_optimised(self) -> bool:
+        return self.optimised
 
-    def make_iteration(self):
+    def make_iteration(self) -> None:
         if self.table is None:
             print("Table was not initialized!")
             return
@@ -59,17 +59,25 @@ class Simplex:
                     - self.table[row][pivot_column] * self.table[pivot_row]
                 )
 
-    def get_solution(self):
+    def get_solution(self) -> Tuple[List[float], float]:
         while not self.optimised:
-            self.make_iteration()
+            self.make_iteration() # TODO: Add Simplex applicability check
 
-        solution = np.zeros(2 * self.A_coef.shape[0])
+        # Initialize solution array with the correct size: length of C_coef (number of decision variables)
+        solution = np.zeros(
+            self.C_coef.shape[0] + self.A_coef.shape[0]
+        )  # Decision vars + slack vars
         for row in range(self.A_coef.shape[0]):
-            basic_var = np.where(self.table[row][: 2 * self.A_coef.shape[0]] == 1)[0]
-            if len(basic_var) == 1:
-                solution[basic_var[0]] = self.table[row][-1]
+            # Find the column index in this row where the value is 1
+            for col in range(self.C_coef.shape[0] + self.A_coef.shape[0]):
+                # Check if this column is a basic variable
+                if self.table[row, col] == 1 and np.sum(self.table[:, col]) == 1:
+                    # This is a basic variable column
+                    solution[col] = self.table[row, -1]
+                    break  # Move to the next row
 
-        decision_vars = solution[: self.A_coef.shape[0]]
+        # Extract decision variables from the solution
+        decision_vars = solution[: self.C_coef.shape[0]]
         max_value = self.table[-1, -1]
 
         return decision_vars, max_value
