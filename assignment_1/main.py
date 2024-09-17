@@ -1,4 +1,4 @@
-from simplex import Simplex
+from src.simplex import Simplex
 
 
 
