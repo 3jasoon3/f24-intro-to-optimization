@@ -1,10 +1,12 @@
 from typing import List, Tuple
 import numpy as np
 
+
 class Simplex:
     """
     The Simplex class implements the Simplex method for solving linear programming problems.
     """
+
     def __init__(
         self, C: List[float], A: List[float], b: List[float], accuracy: float
     ) -> None:
@@ -15,13 +17,13 @@ class Simplex:
         b: Right-hand side values of the inequality constraints.
         accuracy: Precision for detecting optimality (helps handle floating-point errors).
         """
-        self.C_coef = np.array(C) # Objective function coefficients
-        self.A_coef = np.array(A) # Coefficients of the constraints
-        self.b_coef = np.array(b) # Right-hand side values
+        self.C_coef = np.array(C)  # Objective function coefficients
+        self.A_coef = np.array(A)  # Coefficients of the constraints
+        self.b_coef = np.array(b)  # Right-hand side values
         self.accuracy = accuracy  # Desired accuracy
-        self.table = None         # Simplex table
-        self.optimised = False    # Indicates whether the solution is optimized
-        self.solvable = True      # Indicates whether the problem is solvable
+        self.table = None  # Simplex table
+        self.optimised = False  # Indicates whether the solution is optimized
+        self.solvable = True  # Indicates whether the problem is solvable
 
     def check_infeasibility(self) -> bool:
         """
@@ -30,10 +32,12 @@ class Simplex:
         the problem is infeasible.
         """
         for i in range(len(self.b_coef)):
-            if self.b_coef[i] < 0 and all(self.A_coef[i][j] <= 0 for j in range(len(self.A_coef[i]))):
+            if self.b_coef[i] < 0 and all(
+                self.A_coef[i][j] <= 0 for j in range(len(self.A_coef[i]))
+            ):
                 return True
         return False
-            
+
     def check_unboudedness(self, ratios: np.ndarray) -> bool:
         """
         If the objective function can grow indefinitely in the direction
@@ -47,15 +51,15 @@ class Simplex:
 
     def fill_initial_table(self) -> None:
         """
-        Initializes the Simplex table by combining the constraint matrix A, 
+        Initializes the Simplex table by combining the constraint matrix A,
         the identity matrix (for slack variables), and the right-hand side vector b.
         Also appends the objective function row with negative coefficients of C.
         """
         self.table = np.hstack(
             (
-                self.A_coef,                        # Coefficients of the constraints
-                np.eye(self.A_coef.shape[0]),       # Identity matrix for slack variables
-                np.reshape(self.b_coef, (-1, 1)),   # Right-hand side vector b
+                self.A_coef,  # Coefficients of the constraints
+                np.eye(self.A_coef.shape[0]),  # Identity matrix for slack variables
+                np.reshape(self.b_coef, (-1, 1)),  # Right-hand side vector b
             )
         )
         # Objective function row (negative coefficients of C)
@@ -74,7 +78,7 @@ class Simplex:
         if self.table is None:
             print("Table was not initialized!")
             return
-        
+
         # Find the most negative value in the objective row
         pivot_column = np.argmin(self.table[-1, :-1])
 
@@ -82,13 +86,16 @@ class Simplex:
         if self.table[-1, :-1][pivot_column] >= -self.accuracy:
             self.optimised = True
             return
-        
+
         # Compute the ratios for the ratio test
         ratios = np.divide(
-            self.table[:-1, -1],                            # Right-hand side values (b)
-            self.table[:-1, pivot_column],                  # Pivot column values
-            out=np.full_like(self.table[:-1, -1], np.inf),  # Fill with inf where division is not valid
-            where=self.table[:-1, pivot_column] > 0,        # Only consider positive entries in the pivot column
+            self.table[:-1, -1],  # Right-hand side values (b)
+            self.table[:-1, pivot_column],  # Pivot column values
+            out=np.full_like(
+                self.table[:-1, -1], np.inf
+            ),  # Fill with inf where division is not valid
+            where=self.table[:-1, pivot_column]
+            > 0,  # Only consider positive entries in the pivot column
         )
 
         if self.check_unboudedness(ratios):
@@ -115,21 +122,19 @@ class Simplex:
 
         # Check if the problem is infeasible
         if self.check_infeasibility():
-            print(f"The method is not applicable!")
+            print("The method is not applicable!")
             self.solvable = False
-       
+
         # Perform iterations while the solution is not optimized
         while (not self.optimised) and self.solvable:
             self.make_iteration()
-        
+
         # If the problem is unsolvable, return empty results
         if not self.solvable:
             return [], None
-     
+
         # Initialize solution array (size of decision variables + slack variables)
-        solution = np.zeros(
-            self.C_coef.shape[0] + self.A_coef.shape[0]
-        )
+        solution = np.zeros(self.C_coef.shape[0] + self.A_coef.shape[0])
 
         for row in range(self.A_coef.shape[0]):
             # Find the column index in this row where the value is 1
