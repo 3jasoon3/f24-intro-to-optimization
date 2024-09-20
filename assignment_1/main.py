@@ -1,6 +1,5 @@
 from src.simplex import Simplex
 
-
 command = ""
 
 while command.lower() != "end":

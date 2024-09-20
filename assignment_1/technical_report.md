@@ -17,12 +17,10 @@
 - **Maximization or Minimization?** Maximization
 - **Objective Function:** Maximize $$Z = 40x_1 + 30x_2$$
 - **Constraint Functions:** 
-  $$
-  \begin{aligned}
+  $$\begin{aligned}
   x_1 + x_2 & \leq 12 \\
   2x_1 + x_2 & \leq 16
-  \end{aligned}
-  $$
+  \end{aligned}$$
 
 #### Input
 - **C** = [40, 30]
@@ -35,14 +33,31 @@
 
 ### Problem 2
 - **Maximization or Minimization?** Maximization
+- **Objective Function:** Maximize $$Z = 2x_1 + 5x_2$$
+- **Constraint Functions:** 
+  $$\begin{aligned}
+  x_1 + 4x_2 & \leq 24 \\
+  3x_1 + 1x_2 & \leq 21 \\
+  x_1 + x_2 & \leq 9 \\
+  \end{aligned}$$
+
+#### Input
+- **C** = [2, 5]
+- **A** = [[1, 4], [3, 1], [1, 1]]
+- **b** = [24, 21, 9]
+- **Accuracy** = 0.5
+
+#### Output
+- Maximum value of $$Z = 33$$ at $$x_1 = 4, x_2 = 5$$
+
+### Problem 3
+- **Maximization or Minimization?** Maximization
 - **Objective Function:** Maximize $$Z = x_1 + 2x_2 + 3x_3$$
 - **Constraint Functions:** 
-  $$
-  \begin{aligned}
+  $$\begin{aligned}
   x_1 + x_2 + x_3 & \leq 12 \\
   2x_1 + x_2 + 3x_3 & \leq 18
-  \end{aligned}
-  $$
+  \end{aligned}$$
 
 #### Input
 - **C** = [1, 2, 3]
@@ -53,17 +68,15 @@
 #### Output
 - Maximum value of $$Z = 27$$ at $$x_1 = 0, x_2 = 9, x_3 = 3$$
 
-### Problem 3
+### Problem 4
 - **Maximization or Minimization?** Maximization
 - **Objective Function:** Maximize $$Z = 9x_1 + 10x_2 + 16x_3$$
 - **Constraint Functions:** 
-  $$
-  \begin{aligned}
+  $$\begin{aligned}
   18x_1 + 15x_2 + 12x_3 & \leq 360 \\
   6x_1 + 4x_2 + 8x_3 & \leq 192 \\
   5x_1 + 3x_2 + 3x_3 & \leq 180
-  \end{aligned}
-  $$
+  \end{aligned}$$
 
 #### Input
 - **C** = [9, 10, 16]
@@ -74,17 +87,15 @@
 #### Output
 - Maximum value of $$Z = 400$$ at $$x_1 = 0, x_2 = 8, x_3 = 20$$
 
-### Problem 4
+### Problem 5
 - **Maximization or Minimization?** Maximization
 - **Objective Function:** Maximize $$Z = 6x_1 + 2x_2 + 2.5x_3 + 4x_4$$
 - **Constraint Functions:** 
-  $$
-  \begin{aligned}
+  $$\begin{aligned}
   5x_1 + x_2 + 2x_4 & \leq 1000 \\
   4x_1 + 2x_2 + 2x_3 + x_4 & \leq 600 \\
   x_1 + 2x_3 + x_4 & \leq 150
-  \end{aligned}
-  $$
+  \end{aligned}$$
 
 #### Input
 - **C** = [6, 2, 2.5, 4]
@@ -95,17 +106,15 @@
 #### Output
 - Maximum value of $$Z = 1050$$ at $$x_1 = 0, x_2 = 225, x_3 = 0, x_4 = 150$$
 
-### Problem 5
+### Problem 6
 - **Maximization or Minimization?** Not Applicable
 - **Objective Function:** Maximize $$Z = 4x_1 + 5x_2 + 4x_3$$
 - **Constraint Functions:** 
-  $$
-  \begin{aligned}
+  $$\begin{aligned}
   2x_1 + 3x_2 - 6x_3 & \leq 240 \\
   4x_1 + 2x_2 - 4x_3 & \leq 200 \\
   4x_1 + 6x_2 - 8x_3 & \leq 160
-  \end{aligned}
-  $$
+  \end{aligned}$$
 
 #### Input
 - **C** = [4, 5, 4]
@@ -116,16 +125,14 @@
 #### Output
 - The method is not applicable!
 
-### Problem 6
+### Problem 7
 - **Maximization or Minimization?** Minimization
 - **Objective Function:** Minimize $$Z = -x_1 - x_2$$
 - **Constraint Functions:** 
-  $$
-  \begin{aligned}
+  $$\begin{aligned}
   x_1 + x_2 & \leq 1 \\
   -x_1 - x_2 & \leq -3
-  \end{aligned}
-  $$
+  \end{aligned}$$
 
 #### Input
 - **C** = [-1, -1]
@@ -136,13 +143,11 @@
 #### Output
 - This system is infeasible because no values of $x_1$ and $x_2$ can satisfy both inequalities simultaneously.
 
-### Problem 7
+### Problem 8
 - **Maximization or Minimization?** Maximization
 - **Objective Function:** Maximize $$Z = 2x_1 + x_2$$
 - **Constraint Functions:** 
-  $$
-  -x_1 + x_2 \geq 1
-  $$
+  $$-x_1 + x_2 \geq 1$$
 
 #### Input
 - **C** = [2, 1]
