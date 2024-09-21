@@ -44,7 +44,7 @@ class Simplex:
         of the feasible region, then the problem is unbounded.
         """
         if np.all(np.isinf(ratios)):
-            print("The method is not applicable!")
+            print("The problem is unsolvable!")
             self.solvable = False
             return True
         return False
@@ -119,7 +119,7 @@ class Simplex:
         """
         Returns the decision variables and the optimized objective function value if the solution exists.
         """
-
+        
         # Check if the problem is infeasible
         if self.check_infeasibility():
             print("The method is not applicable!")
