@@ -123,7 +123,7 @@
 - **Accuracy** = 0.001
 
 #### Output
-- The method is not applicable!
+- The problem is unsolvable!
 
 ### Problem 7
 - **Maximization or Minimization?** Minimization
@@ -141,7 +141,7 @@
 - **Accuracy** = 0.001
 
 #### Output
-- This system is infeasible because no values of $x_1$ and $x_2$ can satisfy both inequalities simultaneously.
+- The method is not applicable!
 
 ### Problem 8
 - **Maximization or Minimization?** Maximization
@@ -156,7 +156,7 @@
 - **Accuracy** = 0.001
 
 #### Output
-- This problem is unbounded because the objective function can increase indefinitely as $$x_1$$ increases.
+- The problem is unsolvable!
 
 ## Setup and Run
 ```bash
