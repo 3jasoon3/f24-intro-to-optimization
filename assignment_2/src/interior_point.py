@@ -70,8 +70,6 @@ class InteriorPoint:
             x0 += delta_x
 
             x0 = np.maximum(x0, 1e-6)
-        else:
-            print("Warning: Could not find a feasible starting point within 100 iterations.")
         return x0
     def solve(self, alpha=0.5, max_iterations=1000, epsilon=1e-6):
         """
