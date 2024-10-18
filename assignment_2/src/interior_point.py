@@ -30,53 +30,49 @@ class InteriorPoint:
         self.C_adj = np.hstack((np.array(C), np.zeros(self.A_origin.shape[0])))  # Objective function adjficients
         self.A_adj = np.hstack((self.A_origin,  np.eye(self.A_origin.shape[0])))
         if starting_point is None:
-            self.starting_point = self.generate_random_point()[0]
+            self.starting_point = self.generate_random_point()
             print(self.starting_point)
 
 
 
     def make_iteration(self, c: np.ndarray, a: np.ndarray, b: np.ndarray, x0, alpha=0.5, epsilon=1e-6):
-
-
-        n = len(c)
         x = x0.copy()
-
-        # Create diagonal matrix D - new basis
         D = np.diag(x)
+        AA = np.dot(a, D)
+        cc = np.dot(D, c)
+        I = np.eye(len(c))
+        F = np.dot(AA, np.transpose(AA))
+        FI = np.linalg.inv(F)
+        H = np.dot(np.transpose(AA), FI)
+        P = np.subtract(I, np.dot(H, AA))
+        cp = np.dot(P, cc)
+        nu = np.absolute(np.min(cp))
+        y = np.add(np.ones(len(c), float), (alpha / nu) * cp)
+        yy = np.dot(D, y)
+        x = yy
 
-
-        # Adjust A matrix and function adjficients
-        A_new = a @ D
-        c_new = D @ c
-
-        # Calculate projection matrix P and projected gradient c_p
-        A_new_T = A_new.T
-        P = np.eye(n) - A_new_T @ np.linalg.inv(A_new @ A_new_T) @ A_new
-        c_p = P @ c_new
-
-        # Calculate x in new basis (note the change for maximization)
-        negative_c_p = c_p[c_p < 0]
-        if negative_c_p.size > 0:
-            v = max(abs(negative_c_p.min()), epsilon)
-        else:
-            v = epsilon
-        x_tilde = np.ones(n) + (alpha / v) * c_p
-
-        # Return x in old basis
-        x_new = D @ x_tilde
-
-        return x_new
+        return x
 
     def generate_random_point(self):
-        b = self.b.reshape(-1, 1)
-        a_norm = self.A_adj/ b
-        random_point = np.random.random((1, self.A_adj.shape[1]))
-        normalized = random_point/np.sum(random_point)
+        """
+        Generate an initial feasible point x0 such that A_adj @ x0 = b and x0 > 0.
+        """
+        n_vars = self.A_adj.shape[1]
+        x0 = np.ones(n_vars)  # Start with all ones
 
 
+        for _ in range(100):
+            residual = self.A_adj @ x0 - self.b
+            if np.linalg.norm(residual) < self.accuracy:
+                break
 
-        print(np.multiply(a_norm, normalized))
-        return np.multiply(a_norm, normalized)
+            delta_x = np.linalg.lstsq(self.A_adj, self.b - self.A_adj @ x0, rcond=None)[0]
+            x0 += delta_x
+
+            x0 = np.maximum(x0, 1e-6)
+        else:
+            print("Warning: Could not find a feasible starting point within 100 iterations.")
+        return x0
     def solve(self, alpha=0.5, max_iterations=1000, epsilon=1e-6):
         """
         Solve given problem
