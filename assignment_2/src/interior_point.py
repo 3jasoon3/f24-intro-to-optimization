@@ -81,6 +81,11 @@ class InteriorPoint:
 
             x0 = np.maximum(x0, 1e-6)
 
+            # Detect infeasibility
+            if np.linalg.norm(residual) > 1e6:
+                self.solvable = False
+                return None
+
         return x0
 
     def solve(
@@ -94,15 +99,24 @@ class InteriorPoint:
         :param epsilon: Precision for detecting optimality (helps handle floating-point errors)
         :return: A tuple containing the optimized decision variables and the objective value
         """
+        if self.solvable is False:
+            print("The problem does not have solution!")
+            return None, None
 
         x = np.array(self.starting_point)
 
-        for iteration in range(max_iterations):
+        for _ in range(max_iterations):
             x_new = self.make_iteration(self.C_adj, self.A_adj, x, alpha)
 
             if np.allclose(x, x_new, rtol=epsilon, atol=epsilon):
                 self.is_converged = True
                 break
+
+            # Detect unboundedness
+            if np.any(np.abs(x_new) > 1e6):
+                print("The problem does not have a solution!")
+                self.solvable = False
+                return None, None
 
             x = x_new
 
@@ -113,9 +127,9 @@ class InteriorPoint:
             )
 
         # Extract decision variables (excluding slack variables)
-        decision_variables = x[: self.n]
+        decision_variables = np.round(x[: self.n], 5)
 
         # Calculate the optimized objective value
-        optimized_objective = self.C_adj[: self.n].dot(decision_variables)
+        optimized_objective = np.round(self.C_adj[: self.n].dot(decision_variables))
 
         return decision_variables, optimized_objective

@@ -168,7 +168,7 @@
 
 ## Setup and Run
 ```bash
-cd assignment_1
+cd assignment_2
 python main.py
 ```
 
@@ -258,6 +258,11 @@ class InteriorPoint:
 
             x0 = np.maximum(x0, 1e-6)
 
+            # Detect infeasibility
+            if np.linalg.norm(residual) > 1e6:
+                self.solvable = False
+                return None
+
         return x0
 
     def solve(
@@ -271,15 +276,24 @@ class InteriorPoint:
         :param epsilon: Precision for detecting optimality (helps handle floating-point errors)
         :return: A tuple containing the optimized decision variables and the objective value
         """
+        if self.solvable is False:
+            print("The problem does not have solution!")
+            return None, None
 
         x = np.array(self.starting_point)
 
-        for iteration in range(max_iterations):
+        for _ in range(max_iterations):
             x_new = self.make_iteration(self.C_adj, self.A_adj, x, alpha)
 
             if np.allclose(x, x_new, rtol=epsilon, atol=epsilon):
                 self.is_converged = True
                 break
+
+            # Detect unboundedness
+            if np.any(np.abs(x_new) > 1e6):
+                print("The problem does not have a solution!")
+                self.solvable = False
+                return None, None
 
             x = x_new
 
@@ -290,10 +304,10 @@ class InteriorPoint:
             )
 
         # Extract decision variables (excluding slack variables)
-        decision_variables = x[: self.n]
+        decision_variables = np.round(x[: self.n], 5)
 
         # Calculate the optimized objective value
-        optimized_objective = self.C_adj[: self.n].dot(decision_variables)
+        optimized_objective = np.round(self.C_adj[: self.n].dot(decision_variables))
 
         return decision_variables, optimized_objective
 ```
@@ -306,66 +320,58 @@ from src.interior_point import InteriorPoint
 command = ""
 
 while command.lower() != "end":
-    # print("\nWhat a nice day to solve optimization with this constrained gradient descent-like algorithm")
-    # print("Enter 'end' to exit the program")
-    # print("Enter function coefficients: ")
+    print("\nWhat a nice day to solve optimization with this constrained gradient descent-like algorithm")
+    print("Enter 'end' to exit the program")
+    print("Enter function coefficients: ")
     command: str = input()
-    # if command.lower() == "end":
-    #     break
-    # try:
-    #     function_row = list(map(float, command.split()))
-    # except ValueError:
-    #     print("Invalid function coefficients. Please try again.")
-    #     continue
-    #
-    # print("Enter number of constraints and then coefficients of constraints: ")
-    # try:
-    #     n = int(input())
-    #     constraint_coef = []
-    #     for _ in range(n):
-    #         constraint_coef.append(list(map(float, input().split())))
-    # except ValueError:
-    #     print("Invalid constraints. Please try again.")
-    #     continue
-    #
-    # print("Enter right hand side: ")
-    # try:
-    #     rhs = list(map(float, input().split()))
-    # except ValueError:
-    #     print("Invalid right-hand side coefficients. Please try again.")
-    #     continue
-    #
-    # print("Enter accuracy: ")
-    # try:
-    #     acc = float(input())
-    # except ValueError:
-    #     print("Invalid accuracy value. Please try again.")
-    #     continue
-
-    # print("Enter starting point: ")
-    # try:
-    #     starting_point = tuple(map(float, input().split()))
-    # except ValueError:
-    #     print("Invalid starting point. Please try again.")
-    #     continue
+    if command.lower() == "end":
+        break
+    try:
+        function_row = list(map(float, command.split()))
+    except ValueError:
+        print("Invalid function coefficients. Please try again.")
+        continue
+    
+    print("Enter number of constraints and then coefficients of constraints: ")
+    try:
+        n = int(input())
+        constraint_coef = []
+        for _ in range(n):
+            constraint_coef.append(list(map(float, input().split())))
+    except ValueError:
+        print("Invalid constraints. Please try again.")
+        continue
+    
+    print("Enter right hand side: ")
+    try:
+        rhs = list(map(float, input().split()))
+    except ValueError:
+        print("Invalid right-hand side coefficients. Please try again.")
+        continue
+    
+    print("Enter accuracy: ")
+    try:
+        acc = float(input())
+    except ValueError:
+        print("Invalid accuracy value. Please try again.")
+        continue
 
     try:
-        function_row = [9, 10, 16]
-        constraint_coef = [[18, 15, 12], [6, 4, 8], [5, 3, 3]]
-        rhs = [360, 192, 180]
-        acc = 0.00001
-
         ip = InteriorPoint(function_row, constraint_coef, rhs, acc)
-        x = ip.solve()
-        print("Solution: ")
-        for i, value in enumerate(x):
-            print(f"x{i + 1} = {value:.4f}")
 
-        if not ip.is_converged:
-            print(
-                "\nWarning: The algorithm did not converge to the specified accuracy."
-            )
-            print("The solution may not be optimal.")
+        # Solve the problem, getting the decision variables and optimized objective value
+        answer, max_value = ip.solve()
+        
+        if answer is None:  # No solution found
+            break
+
+        # Print decision variables
+        print("Decision variables:")
+        for i in range(len(answer)):
+            print(f"x{i + 1} = {answer[i]}")
+        
+        # Print the optimized objective value
+        print(f"Optimized objective function's value: {max_value}")
     except Exception as e:
         print(f"An error occurred: {str(e)}")
         print("You entered an invalid problem. Please try again.")
