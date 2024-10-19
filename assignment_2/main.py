@@ -1,5 +1,4 @@
 from src.interior_point import InteriorPoint
-import numpy as np
 
 command = ""
 
@@ -7,7 +6,7 @@ while command.lower() != "end":
     # print("\nWhat a nice day to solve optimization with this constrained gradient descent-like algorithm")
     # print("Enter 'end' to exit the program")
     # print("Enter function coefficients: ")
-    command = input()
+    command: str = input()
     # if command.lower() == "end":
     #     break
     # try:
@@ -48,8 +47,8 @@ while command.lower() != "end":
     #     continue
 
     try:
-        function_row = [9,10,16 ]
-        constraint_coef = [[18,15,12 ], [6,4,8], [5,3,3]]
+        function_row = [9, 10, 16]
+        constraint_coef = [[18, 15, 12], [6, 4, 8], [5, 3, 3]]
         rhs = [360, 192, 180]
         acc = 0.00001
 
@@ -60,7 +59,9 @@ while command.lower() != "end":
             print(f"x{i + 1} = {value:.4f}")
 
         if not ip.is_converged:
-            print("\nWarning: The algorithm did not converge to the specified accuracy.")
+            print(
+                "\nWarning: The algorithm did not converge to the specified accuracy."
+            )
             print("The solution may not be optimal.")
     except Exception as e:
         print(f"An error occurred: {str(e)}")
