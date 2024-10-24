@@ -1,6 +1,7 @@
 from typing import List
 import numpy as np
 
+
 class TransportationProblem:
     def __init__(self, n : int  ,m : int, A: List[int], B: List[int], costs: List[List[int]] ):
         self.n = n
@@ -8,8 +9,11 @@ class TransportationProblem:
         self.A = np.array(A)
         self.B = np.array(B)
         self.costs = np.array(costs)
-    def show_problem(self):
-        pass
+
+    def is_balanced(self):
+        return sum(self.A) == sum(self.B)
+
+
 
 
 
