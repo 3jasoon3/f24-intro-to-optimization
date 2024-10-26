@@ -6,7 +6,7 @@ class VAM:
 
 
     def solve(self):
-        if self.tp.is_balanced():
+        if not self.tp.is_balanced():
             print("Problem is unbalanced")
             return
         solution = []
