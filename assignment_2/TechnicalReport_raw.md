@@ -6,7 +6,7 @@
 - **Team Member 2:** [Alexandra Starikova-Nasibullina](a.nasibullina@innopolis.university)
 
 ## Link to the Product
-- The product is available at: [GitHub](https://github.com/3jasoon3/f24-intro-to-optimization/tree/main/assignment_1)
+- The product is available at: [GitHub](https://github.com/3jasoon3/f24-intro-to-optimization/tree/main/assignment_2)
 
 ## Programming Language
 - **Programming Language:** Python
