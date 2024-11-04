@@ -1,7 +1,8 @@
-from typing import List
 import numpy as np
 
+
 class LeastCost:
+
     def __init__(self, problem):
         self.problem = problem
 
@@ -9,7 +10,6 @@ class LeastCost:
         a = self.problem.A.copy()
         b = self.problem.B.copy()
         costs = self.problem.costs.copy()
-        m, n = self.problem.m, self.problem.n
         initial_feasible_solution = []
 
         while any(a != 0) and any(b != 0):
