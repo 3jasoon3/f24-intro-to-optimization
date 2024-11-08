@@ -8,16 +8,16 @@
 ### Egor Chernobrovkin
 - **Grade**: 5
 - **Contributions:**
-  - 
+  - Refactored the tests
 
 ### Dmitrii Kuznetsov
 - **Grade**: 5
 - **Contributions:**
-  - Implemented the baseline solution for the Transportation Problem solvers
+  - Developed the baseline solution for the Interior Point method solver,
 
 
 ### Alexandra Starikova-Nasibullina
 - **Grade**: 5
 - **Contributions:**
-  - 
+  - Handled algorithm edge cases
 

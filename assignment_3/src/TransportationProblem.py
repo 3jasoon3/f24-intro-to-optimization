@@ -1,6 +1,5 @@
-from typing import List
+from typing import List, Union
 import numpy as np
-
 
 class TransportationProblem:
     
@@ -15,3 +14,4 @@ class TransportationProblem:
 
     def is_balanced(self):
         return sum(self.A) == sum(self.B)
+

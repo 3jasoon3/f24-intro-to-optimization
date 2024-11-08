@@ -3,78 +3,51 @@ import numpy as np
 
 
 class Russel:
-
     def __init__(self, transportation_problem: TransportationProblem):
         self.tp = transportation_problem
+        self.costs = self.tp.costs.copy()
+        self.supply = self.tp.A.copy()
+        self.demand = self.tp.B.copy()
+        self.row_indices = np.arange(len(self.supply))
+        self.col_indices = np.arange(len(self.demand))
 
     def solve(self):
         if not self.tp.is_balanced():
             print("Problem is unbalanced")
-            return
+            return []
 
-        row_reduction = 0
-        col_reduction = 0
         solution = []
-        for i in range(int(self.tp.n * self.tp.m / 2)):
-            differences = np.zeros((self.tp.n, self.tp.m))
-            for row in range(self.tp.n - row_reduction):
-                for col in range(self.tp.m - col_reduction):
-                    differences[row, col] = self.tp.costs[row][col] - (
-                        max(self.tp.costs[row]) + max(self.tp.costs[:, col])
-                    )
-            element_i = np.unravel_index(differences.argmin(), differences.shape)
+        while len(self.supply) > 0 and len(self.demand) > 0:
 
-            row_i = element_i[0]
-            col_i = element_i[1]
+            row_maxima = np.max(self.costs, axis=1)
+            col_maxima = np.max(self.costs, axis=0)
 
-            if self.tp.A[row_i] < self.tp.B[col_i]:
+            
+            differences = np.zeros((len(self.supply), len(self.demand)))
+            for i in range(len(self.supply)):
+                for j in range(len(self.demand)):
+                    differences[i, j] = self.costs[i, j] - (row_maxima[i] + col_maxima[j])
 
-                solution.append(
-                    (
-                        row_i + row_reduction,
-                        col_i + col_reduction,
-                        self.tp.costs[row_i][col_i],
-                        self.tp.A[row_i],
-                    )
-                )
-                self.tp.B[col_i] -= self.tp.A[row_i]
-                self.tp.A = np.delete(self.tp.A, row_i, axis=0)
-                self.tp.costs = np.delete(self.tp.costs, row_i, axis=0)
+            min_i, min_j = np.unravel_index(differences.argmin(), differences.shape)
+            allocation = min(self.supply[min_i], self.demand[min_j])
+            orig_row = self.row_indices[min_i]
+            orig_col = self.col_indices[min_j]
+            solution.append((orig_row, orig_col, self.costs[min_i, min_j], allocation))
+            if self.supply[min_i] < self.demand[min_j]:
+                self.demand[min_j] -= self.supply[min_i]
+                self.costs = np.delete(self.costs, min_i, axis=0)
+                self.supply = np.delete(self.supply, min_i)
+                self.row_indices = np.delete(self.row_indices, min_i)
+            elif self.supply[min_i] > self.demand[min_j]:
+                self.supply[min_i] -= self.demand[min_j]
+                self.costs = np.delete(self.costs, min_j, axis=1)
+                self.demand = np.delete(self.demand, min_j)
+                self.col_indices = np.delete(self.col_indices, min_j)
+            else:
+                self.costs = np.delete(np.delete(self.costs, min_i, axis=0), min_j, axis=1)
+                self.supply = np.delete(self.supply, min_i)
+                self.demand = np.delete(self.demand, min_j)
+                self.row_indices = np.delete(self.row_indices, min_i)
+                self.col_indices = np.delete(self.col_indices, min_j)
 
-                row_reduction += 1
-
-            elif self.tp.A[row_i] > self.tp.B[col_i]:
-
-                solution.append(
-                    (
-                        row_i + row_reduction,
-                        col_i + col_reduction,
-                        self.tp.costs[row_i][col_i],
-                        self.tp.B[col_i],
-                    )
-                )
-                self.tp.A[row_i] -= self.tp.B[col_i]
-                self.tp.B = np.delete(self.tp.B, col_i, axis=0)
-                self.tp.costs = np.delete(self.tp.costs, col_i, axis=1)
-
-                col_reduction += 1
-
-            elif self.tp.A[row_i] == self.tp.B[col_i]:
-
-                solution.append(
-                    (
-                        row_i + row_reduction,
-                        col_i + col_reduction,
-                        self.tp.costs[row_i][col_i],
-                        self.tp.A[row_i],
-                    )
-                )
-                self.tp.B = np.delete(self.tp.B, col_i, axis=0)
-                self.tp.A = np.delete(self.tp.A, row_i, axis=0)
-                self.tp.costs = np.delete(self.tp.costs, row_i, axis=0)
-                self.tp.costs = np.delete(self.tp.costs, col_i, axis=1)
-
-                row_reduction += 1
-                col_reduction += 1
-                
         return solution

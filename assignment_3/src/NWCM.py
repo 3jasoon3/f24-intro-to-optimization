@@ -2,7 +2,6 @@ from src.TransportationProblem import TransportationProblem
 
 
 class NWCM:
-
     def __init__(self, tp: TransportationProblem):
         self.tp = tp
 
@@ -10,46 +9,59 @@ class NWCM:
         solution = []
         row_reduction = 0
         col_reduction = 0
-        for i in range(int(self.tp.n * self.tp.m * (0.5))):
-            cell = self.tp.costs[0 + row_reduction, 0 + col_reduction]
-            if self.tp.A[0 + row_reduction] < self.tp.B[0 + col_reduction]:
+        
+        
+        while row_reduction < self.tp.n and col_reduction < self.tp.m:
+            
+            if self.tp.A[row_reduction] == 0:
+                row_reduction += 1
+                continue
+            if self.tp.B[col_reduction] == 0:
+                col_reduction += 1
+                continue
+                
+            cell = self.tp.costs[row_reduction, col_reduction]
+            
+            
+            if self.tp.A[row_reduction] < self.tp.B[col_reduction]:
                 solution.append(
                     (
-                        0 + row_reduction,
-                        0 + col_reduction,
+                        row_reduction,
+                        col_reduction,
                         cell,
-                        self.tp.A[0 + row_reduction],
+                        self.tp.A[row_reduction],
                     )
                 )
-                self.tp.B[0 + col_reduction] -= self.tp.A[0 + row_reduction]
-                self.tp.A[0 + row_reduction] = 0
+                self.tp.B[col_reduction] -= self.tp.A[row_reduction]
+                self.tp.A[row_reduction] = 0
                 row_reduction += 1
 
-            elif self.tp.A[0 + row_reduction] > self.tp.B[0 + col_reduction]:
-
+            
+            elif self.tp.A[row_reduction] > self.tp.B[col_reduction]:
                 solution.append(
                     (
-                        0 + row_reduction,
-                        0 + col_reduction,
-                        self.tp.costs[0 + row_reduction][0 + col_reduction],
-                        self.tp.B[0 + col_reduction],
+                        row_reduction,
+                        col_reduction,
+                        cell,
+                        self.tp.B[col_reduction],
                     )
                 )
-                self.tp.A[0 + row_reduction] -= self.tp.B[0 + col_reduction]
-                self.tp.B[0 + col_reduction] = 0
+                self.tp.A[row_reduction] -= self.tp.B[col_reduction]
+                self.tp.B[col_reduction] = 0
                 col_reduction += 1
 
-            elif self.tp.A[0 + row_reduction] == self.tp.B[0 + col_reduction]:
-
+            else:
                 solution.append(
                     (
-                        0 + row_reduction,
-                        0 + col_reduction,
-                        self.tp.costs[0 + row_reduction][0 + col_reduction],
-                        self.tp.A[0 + row_reduction],
+                        row_reduction,
+                        col_reduction,
+                        cell,
+                        self.tp.A[row_reduction],
                     )
                 )
-                self.tp.B[0 + col_reduction] = 0
-                self.tp.A[0 + row_reduction] = 0
+                self.tp.B[col_reduction] = 0
+                self.tp.A[row_reduction] = 0
                 row_reduction += 1
                 col_reduction += 1
+
+        return solution
