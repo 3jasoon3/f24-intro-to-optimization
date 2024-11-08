@@ -13,7 +13,7 @@
 ### Dmitrii Kuznetsov
 - **Grade**: 5
 - **Contributions:**
-  - Developed the baseline solution for the Interior Point method solver,
+  - Developed the baseline solution for the Interior Point method solver
 
 
 ### Alexandra Starikova-Nasibullina
